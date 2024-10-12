@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.glow {
+  width: 0px;
+  height: 0px;
+  border-radius: 100%;
+  box-shadow: 0 0 120px 150px #00ff40a9; 
+}
+
+.MyGradient {
+  mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 1) 20%,
+    rgba(0, 0, 0, 1) 80%,
+    rgba(0, 0, 0, 0)
+  );
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Untuk Firefox */
+html {
+  scrollbar-width: none;
+}
