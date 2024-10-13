@@ -41,7 +41,7 @@ const Experience = () => {
                             </p>
                         </div>
                         <div className="w-full max-w-xl lg:w-3/4 text-xl">
-                            <h6 className="mb-2 font-semibold ">
+                            <h3 className="mb-2 font-semibold ">
                                 {experience.role} -{" "}
                                 <span className="text-lg text-green-100">
                                     {experience.company}
@@ -49,7 +49,7 @@ const Experience = () => {
                                 <span className="text-xs text-green-300 ml-2">
                                     {experience.position !== "" && experience.position}
                                 </span>
-                            </h6>
+                            </h3>
                             <div className="mb-4 text-neutral-400 text-sm">
                                 {experience.description.map((desc, idx) => (
                                     <p key={idx}>{desc}</p>
