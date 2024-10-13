@@ -1,4 +1,5 @@
 import { SiGithub, SiInstagram, SiLinkedin } from "react-icons/si";
+import { Link } from "@remix-run/react"; // Import the Link component
 
 const Navbar = () => {
     const socials = [
@@ -28,9 +29,9 @@ const Navbar = () => {
                 {socials.map((social, index) => {
                     const Icon = social.Icon;
                     return (
-                        // <Link href={social.link} key={index} aria-label={social.label}>
-                        <Icon className="w-6 h-6 hover:scale-125 transition-all hover:cursor-pointer text-white" key={index} />
-                        // </Link>
+                        <a href={social.link} key={index} aria-label={social.label} target="_blank" rel="noopener noreferrer"> {/* Use anchor tag for external links */}
+                            <Icon className="w-6 h-6 hover:scale-125 transition-all hover:cursor-pointer text-white" />
+                        </a>
                     );
                 })}
             </div>
