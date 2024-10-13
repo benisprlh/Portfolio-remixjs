@@ -1,4 +1,5 @@
-import React, { useEffect, Suspense, useRef, useState } from "react";
+import React, { useEffect, Suspense, useRef, useState, RefObject } from "react";
+import { motion } from "framer-motion";
 
 export const Projects = [
     {
@@ -64,9 +65,9 @@ export const Projects = [
 // Lazy load each section
 const Project = () => {
     const [loadProjects, setLoadProjects] = useState(false);
-
-    // Create ref for the Projects section
-    const projectRef = useRef(null);
+    const projectRef = useRef<HTMLDivElement | null>(null);
+    const projectRefs = useRef<(RefObject<HTMLDivElement>)[]>(Projects.map(() => React.createRef<HTMLDivElement>()));
+    const [visibleProjects, setVisibleProjects] = useState(Array(Projects.length).fill(false));
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -77,10 +78,9 @@ const Project = () => {
                     }
                 });
             },
-            { threshold: 0.1 } // Load when 10% of the section is visible
+            { threshold: 0.1 }
         );
 
-        // Observe the projects section
         if (projectRef.current) observer.observe(projectRef.current);
 
         return () => {
@@ -88,39 +88,76 @@ const Project = () => {
         };
     }, []);
 
+    useEffect(() => {
+        // Explicitly type the observers array
+        const observers: IntersectionObserver[] = projectRefs.current.map((ref, index) => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        setVisibleProjects((prev) => {
+                            const newVisible = [...prev];
+                            newVisible[index] = true; // Set the specific project to visible
+                            return newVisible;
+                        });
+                        observer.disconnect(); // Disconnect after it's visible
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            if (ref.current) observer.observe(ref.current);
+
+            return observer; // Return the observer
+        });
+
+        return () => {
+            projectRefs.current.forEach((ref, index) => {
+                if (ref.current) observers[index].unobserve(ref.current);
+            });
+        };
+    }, [loadProjects]);
+
     return (
         <section className="border-b border-neutral-900 pb-4" ref={projectRef}>
-            <h2 className="my-20 text-center text-4xl">Projects</h2>
+            <h2 className="my-20 text-center text-4xl text-white">Projects</h2>
             {loadProjects ? (
                 <Suspense fallback={<div>Loading...</div>}>
                     <div>
-                        {Projects.map((project, index) => (
-                            <div key={index} className="mb-8 flex flex-wrap lg:justify-center items-center">
-                                <div className="w-full lg:w-1/4">
-                                    <img
-                                        src={project.image}
-                                        width={150}
-                                        height={150}
-                                        alt={project.title}
-                                        className="mb-6 rounded"
-                                    />
-                                </div>
-                                <div className="w-full max-w-xl lg:w-3/5">
-                                    <h5 className="mb-2 font-semibold text-xl">{project.title}</h5>
-                                    <p className="mb-4 text-neutral-400">{project.description}</p>
-                                    <div className="flex flex-row flex-wrap gap-2">
-                                        {project.technologies.map((tech, index) => (
-                                            <span
-                                                key={index}
-                                                className="rounded bg-neutral-900 px-2 py-1 text-sm font-medium text-green-500"
-                                            >
-                                                {tech}
-                                            </span>
-                                        ))}
+                        {Projects.map((project, index) => {
+                            return (
+                                <motion.div
+                                    key={index}
+                                    ref={projectRefs.current[index]} // Use the ref for this project
+                                    className="mb-8 flex flex-wrap lg:justify-center items-center"
+                                    initial={{ opacity: 0, y: 100 }}
+                                    animate={visibleProjects[index] ? { opacity: 1, y: 0 } : {}}
+                                    transition={{ duration: 1.5 }}
+                                >
+                                    <div className="w-full lg:w-1/4">
+                                        <img
+                                            src={project.image}
+                                            width={150}
+                                            height={150}
+                                            alt={project.title}
+                                            className="mb-6 rounded"
+                                        />
                                     </div>
-                                </div>
-                            </div>
-                        ))}
+                                    <div className="w-full max-w-xl lg:w-3/5">
+                                        <h5 className="mb-2 font-semibold text-xl">{project.title}</h5>
+                                        <p className="mb-4 text-neutral-400">{project.description}</p>
+                                        <div className="flex flex-row flex-wrap gap-2">
+                                            {project.technologies.map((tech, techIndex) => (
+                                                <span
+                                                    key={techIndex}
+                                                    className="rounded bg-neutral-900 px-2 py-1 text-sm font-medium text-green-500"
+                                                >
+                                                    {tech}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            );
+                        })}
                     </div>
                 </Suspense>
 

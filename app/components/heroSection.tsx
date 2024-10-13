@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const HeroSection = () => {
     const [text, setText] = useState("");
@@ -12,7 +12,39 @@ const HeroSection = () => {
     ];
 
     const [scrollPosition, setScrollPosition] = useState(0);
+    const sectionRef = useRef(null);
+    const hasAnimated = useRef(false); // Ref untuk melacak apakah animasi sudah dijalankan
 
+    // Typing animation logic
+    useEffect(() => {
+        const currentText = texts[textIndex];
+        const typingInterval = setInterval(() => {
+            if (!isDeleting) {
+                // Add character
+                if (text.length !== currentText.length - 1) {
+                    setText((prev) => prev + currentText[text.length]);
+                }
+
+                if (text.length === currentText.length - 1) {
+                    clearInterval(typingInterval);
+                    setTimeout(() => {
+                        setIsDeleting(true);
+                    }, 1000);
+                }
+            } else {
+                // Remove character
+                setText((prev) => prev.slice(0, -1));
+                if (text.length === 0) {
+                    setIsDeleting(false);
+                    setTextIndex((prevIndex) => (prevIndex + 1) % texts.length);
+                }
+            }
+        }, isDeleting ? 75 : 110);
+
+        return () => clearInterval(typingInterval);
+    }, [text, textIndex, isDeleting]);
+
+    // Handle scroll position for rotating elements
     useEffect(() => {
         const handleScroll = () => {
             setScrollPosition(window.scrollY);
@@ -24,35 +56,17 @@ const HeroSection = () => {
         };
     }, []);
 
-    useEffect(() => {
-        const currentText = texts[textIndex];
-        const typingInterval = setInterval(() => {
-            if (!isDeleting) {
-                // Add character
-                if (text.length !== currentText.length - 1) setText((prev) => prev + currentText[text.length]);
-
-                if (text.length === currentText.length - 1) {
-                    clearInterval(typingInterval); // Stop typing interval
-                    // Set delay before starting to delete
-                    setTimeout(() => {
-                        setIsDeleting(true);
-                    }, 1000); // Delay before starting to delete
-                }
-            } else if (isDeleting) {
-                // Remove character
-                setText((prev) => prev.slice(0, -1));
-                if (text.length === 0) {
-                    setIsDeleting(false);
-                    setTextIndex((prevIndex) => (prevIndex + 1) % texts.length);
-                }
-            }
-        }, isDeleting ? 75 : 110); // Speed up deleting
-
-        return () => clearInterval(typingInterval); // Cleanup interval on unmount
-    }, [text, textIndex, isDeleting]); // Depend on text, textIndex, and isDeleting
-
     return (
-        <section className="min-h-[60vh] flex flex-col-reverse gap-12 lg:gap-48 lg:flex-row justify-between items-center">
+        <motion.section
+            ref={sectionRef}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: hasAnimated.current ? 1 : 0, y: hasAnimated.current ? 0 : 20 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            onAnimationComplete={() => {
+                hasAnimated.current = true; // Tandai bahwa animasi sudah dijalankan
+            }}
+            className="min-h-[60vh] flex flex-col-reverse gap-12 lg:gap-48 lg:flex-row justify-between items-center"
+        >
             <div className="space-y-10 text-center lg:text-left">
                 <h2 className="text-2xl lg:text-7xl font-bold text-gray-200">
                     <span className="underline underline-offset-8 decoration-green-500">
@@ -109,7 +123,7 @@ const HeroSection = () => {
                     <div className="glow rounded-full absolute top-[40%] right-1/2 -z-10"></div>
                 </div>
             </div>
-        </section>
+        </motion.section>
     );
 };
 
