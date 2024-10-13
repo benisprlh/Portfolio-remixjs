@@ -52,7 +52,7 @@ const HeroSection = () => {
     }, [text, textIndex, isDeleting]); // Depend on text, textIndex, and isDeleting
 
     return (
-        <div className="min-h-[60vh] flex flex-col-reverse gap-12 lg:gap-48 lg:flex-row justify-between items-center">
+        <section className="min-h-[60vh] flex flex-col-reverse gap-12 lg:gap-48 lg:flex-row justify-between items-center">
             <div className="space-y-10 text-center lg:text-left">
                 <h2 className="text-2xl lg:text-7xl font-bold text-gray-200">
                     <span className="underline underline-offset-8 decoration-green-500">
@@ -109,7 +109,7 @@ const HeroSection = () => {
                     <div className="glow rounded-full absolute top-[40%] right-1/2 -z-10"></div>
                 </div>
             </div>
-        </div>
+        </section>
     );
 };
 
