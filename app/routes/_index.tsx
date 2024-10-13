@@ -1,7 +1,6 @@
 import type { MetaFunction } from "@remix-run/node";
 import Experience from "~/components/experience";
 import HeroSection from "~/components/heroSection";
-import Marquee from "~/components/marquee";
 import Navbar from "~/components/navbar";
 import Project from "~/components/project";
 import Technologies from "~/components/technologies";
@@ -21,7 +20,6 @@ export default function Index() {
           <Navbar />
           <HeroSection />
           <Technologies />
-          {/* <Marquee /> */}
           <Experience />
           <Project />
         </div>
