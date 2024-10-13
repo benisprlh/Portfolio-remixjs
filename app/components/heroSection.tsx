@@ -13,7 +13,7 @@ const HeroSection = () => {
 
     const [scrollPosition, setScrollPosition] = useState(0);
     const sectionRef = useRef(null);
-    const hasAnimated = useRef(false); // Ref untuk melacak apakah animasi sudah dijalankan
+    const hasAnimated = useRef(false); // Ref to track if animation has run
 
     // Typing animation logic
     useEffect(() => {
@@ -21,11 +21,10 @@ const HeroSection = () => {
         const typingInterval = setInterval(() => {
             if (!isDeleting) {
                 // Add character
-                if (text.length !== currentText.length - 1) {
+                if (text.length < currentText.length) {
                     setText((prev) => prev + currentText[text.length]);
-                }
-
-                if (text.length === currentText.length - 1) {
+                } else {
+                    // If reached end of the text, start deletion
                     clearInterval(typingInterval);
                     setTimeout(() => {
                         setIsDeleting(true);
@@ -33,11 +32,23 @@ const HeroSection = () => {
                 }
             } else {
                 // Remove character
-                setText((prev) => prev.slice(0, -1));
-                if (text.length === 0) {
-                    setIsDeleting(false);
-                    setTextIndex((prevIndex) => (prevIndex + 1) % texts.length);
+                if (text.length === 1) { // When only one character is left
+                    console.log("masuk ini pas")
+                    console.log(text)
+                    setText(texts[(textIndex + 1) % texts.length][0]);
+                    clearInterval(typingInterval);
+                    setTextIndex((prevIndex) => (prevIndex + 1) % texts.length); // Move to the next text
+                    console.log(textIndex, "<<< ini text indexnya")
+                    setIsDeleting(false); // Reset deleting state
+                    return
+                } else if (text.length === 0) {
+                    // If text is completely deleted, set to the first character of the next text
+                    setText(texts[(textIndex + 1) % texts.length][0]);
+                    setTextIndex((prevIndex) => (prevIndex + 1) % texts.length); // Move to the next text
+                    setIsDeleting(false); // Reset deleting state
+                    return
                 }
+                setText((prev) => prev.slice(0, -1));
             }
         }, isDeleting ? 75 : 110);
 
@@ -63,7 +74,7 @@ const HeroSection = () => {
             animate={{ opacity: hasAnimated.current ? 1 : 0, y: hasAnimated.current ? 0 : 20 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             onAnimationComplete={() => {
-                hasAnimated.current = true; // Tandai bahwa animasi sudah dijalankan
+                hasAnimated.current = true; // Mark that the animation has run
             }}
             className="min-h-[60vh] flex flex-col-reverse gap-12 lg:gap-48 lg:flex-row justify-between items-center"
         >
@@ -77,7 +88,7 @@ const HeroSection = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.5 }}
-                        className="text-4xl block pt-9"
+                        className="lg:text-4xl text-lg block pt-9"
                         style={{ minHeight: '48px' }}
                     >
                         {text}
