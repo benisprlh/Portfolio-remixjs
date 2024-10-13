@@ -1,3 +1,2 @@
-# Isi contoh robots.txt
 User-agent: *
 Allow: /

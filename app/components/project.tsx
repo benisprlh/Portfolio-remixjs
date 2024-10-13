@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, Suspense, useRef, useState } from "react";
 
 export const Projects = [
     {
@@ -92,35 +92,38 @@ const Project = () => {
         <section className="border-b border-neutral-900 pb-4" ref={projectRef}>
             <h2 className="my-20 text-center text-4xl">Projects</h2>
             {loadProjects ? (
-                <div>
-                    {Projects.map((project, index) => (
-                        <div key={index} className="mb-8 flex flex-wrap lg:justify-center items-center">
-                            <div className="w-full lg:w-1/4">
-                                <img
-                                    src={project.image}
-                                    width={150}
-                                    height={150}
-                                    alt={project.title}
-                                    className="mb-6 rounded"
-                                />
-                            </div>
-                            <div className="w-full max-w-xl lg:w-3/5">
-                                <h5 className="mb-2 font-semibold text-xl">{project.title}</h5>
-                                <p className="mb-4 text-neutral-400">{project.description}</p>
-                                <div className="flex flex-row flex-wrap gap-2">
-                                    {project.technologies.map((tech, index) => (
-                                        <span
-                                            key={index}
-                                            className="rounded bg-neutral-900 px-2 py-1 text-sm font-medium text-green-500"
-                                        >
-                                            {tech}
-                                        </span>
-                                    ))}
+                <Suspense fallback={<div>Loading...</div>}>
+                    <div>
+                        {Projects.map((project, index) => (
+                            <div key={index} className="mb-8 flex flex-wrap lg:justify-center items-center">
+                                <div className="w-full lg:w-1/4">
+                                    <img
+                                        src={project.image}
+                                        width={150}
+                                        height={150}
+                                        alt={project.title}
+                                        className="mb-6 rounded"
+                                    />
+                                </div>
+                                <div className="w-full max-w-xl lg:w-3/5">
+                                    <h5 className="mb-2 font-semibold text-xl">{project.title}</h5>
+                                    <p className="mb-4 text-neutral-400">{project.description}</p>
+                                    <div className="flex flex-row flex-wrap gap-2">
+                                        {project.technologies.map((tech, index) => (
+                                            <span
+                                                key={index}
+                                                className="rounded bg-neutral-900 px-2 py-1 text-sm font-medium text-green-500"
+                                            >
+                                                {tech}
+                                            </span>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                </Suspense>
+
             ) : (
                 <div className="text-white">Loading projects...</div>
             )}
