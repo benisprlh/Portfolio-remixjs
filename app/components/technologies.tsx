@@ -1,20 +1,49 @@
-import {
-    SiReact,
-    SiMongodb,
-    SiNodedotjs,
-    SiNextdotjs,
-    SiTypescript,
-    SiPostgresql,
-    SiExpress,
-} from "react-icons/si";
+import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
+
 import Marquee from "./marquee";
+const MarqueeSection = lazy(() => import("./marquee"));
 
 function Technologies() {
+    const [loadMarquee, setLoadMarquee] = useState(false);
+
+    // Create refs for sections
+    const aboutRef = useRef(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        if (entry.target === aboutRef.current) {
+                            setLoadMarquee(true);
+                        }
+                    }
+                });
+            },
+            { threshold: 0.1 } // load when 10% of the section is visible
+        );
+
+        // Observe sections
+        if (aboutRef.current) observer.observe(aboutRef.current);
+
+        // Cleanup observer on unmount
+        return () => {
+            if (aboutRef.current) observer.unobserve(aboutRef.current);
+        };
+    }, []);
     return (
-        <div className="border-b border-neutral-800 pb-24">
+        <section className="border-b border-neutral-800 pb-24">
             <h2 className="my-20 text-center text-4xl text-white">Skills</h2>
-            <Marquee />
-        </div>
+            <div ref={aboutRef}>
+                {loadMarquee ? (
+                    <Suspense fallback={<div>Loading About...</div>}>
+                        <Marquee />
+                    </Suspense>
+                ) : (
+                    <div>Scroll to load About section...</div>
+                )}
+            </div>
+        </section>
     );
 }
 
