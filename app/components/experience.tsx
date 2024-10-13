@@ -1,3 +1,6 @@
+import React, { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+
 const Experiences = [
     {
         start: "Feb 2024",
@@ -32,40 +35,74 @@ const Experience = () => {
         <section className="border-b border-neutral-900 pb-4 text-gray-100">
             <h2 className="my-20 text-center text-4xl ">Experience</h2>
             <div>
-                {Experiences.map((experience, index) => (
-                    <div key={index} className="mb-8 flex flex-wrap lg:justify-center">
-                        <div className="w-full lg:w-1/4 flex-row">
-                            <p className="mb-2 text-sm text-neutral-400">
-                                {experience.start}{" "}
-                                {experience.end !== "" && `- ${experience.end}`}
-                            </p>
-                        </div>
-                        <div className="w-full max-w-xl lg:w-3/4 text-xl">
-                            <h3 className="mb-2 font-semibold ">
-                                {experience.role} -{" "}
-                                <span className="text-lg text-green-100">
-                                    {experience.company}
-                                </span>
-                                <span className="text-xs text-green-300 ml-2">
-                                    {experience.position !== "" && experience.position}
-                                </span>
-                            </h3>
-                            <div className="mb-4 text-neutral-400 text-sm">
-                                {experience.description.map((desc, idx) => (
-                                    <p key={idx}>{desc}</p>
+                {Experiences.map((experience, index) => {
+                    const experienceRef = useRef(null);
+                    const [isVisible, setIsVisible] = useState(false);
+
+                    useEffect(() => {
+                        const observer = new IntersectionObserver(
+                            ([entry]) => {
+                                if (entry.isIntersecting) {
+                                    setIsVisible(true); // Set isVisible to true when the experience is visible
+                                    observer.disconnect(); // Disconnect observer after the first trigger
+                                }
+                            },
+                            { threshold: 0.1 } // Load when 10% of the section is visible
+                        );
+
+                        if (experienceRef.current) {
+                            observer.observe(experienceRef.current); // Start observing the experience
+                        }
+
+                        return () => {
+                            if (experienceRef.current) {
+                                observer.unobserve(experienceRef.current); // Cleanup observer on unmount
+                            }
+                        };
+                    }, []);
+
+                    return (
+                        <motion.div
+                            key={index}
+                            ref={experienceRef}
+                            className="mb-20 flex flex-wrap lg:justify-center"
+                            initial={{ opacity: 0, x: -100 }} // Initial state
+                            animate={isVisible ? { opacity: 1, x: 0 } : {}} // End state only when visible
+                            transition={{ duration: 1 }} // Duration of the animation
+                        >
+                            <div className="w-full lg:w-1/4 flex-row">
+                                <p className="mb-2 text-sm text-neutral-400">
+                                    {experience.start}{" "}
+                                    {experience.end !== "" && `- ${experience.end}`}
+                                </p>
+                            </div>
+                            <div className="w-full max-w-xl lg:w-3/4 text-xl">
+                                <h3 className="mb-2 font-semibold ">
+                                    {experience.role} -{" "}
+                                    <span className="text-lg text-green-100">
+                                        {experience.company}
+                                    </span>
+                                    <span className="text-xs text-green-300 ml-2">
+                                        {experience.position !== "" && experience.position}
+                                    </span>
+                                </h3>
+                                <div className="mb-4 text-neutral-400 text-sm">
+                                    {experience.description.map((desc, idx) => (
+                                        <p key={idx}>{desc}</p>
+                                    ))}
+                                </div>
+                                {experience.technologies.map((tech, index) => (
+                                    <span
+                                        key={index}
+                                        className="mr-2 mt-4 rounded bg-neutral-900 px-2 py-1 text-sm font-medium text-green-500"
+                                    >
+                                        {tech}
+                                    </span>
                                 ))}
                             </div>
-                            {experience.technologies.map((tech, index) => (
-                                <span
-                                    key={index}
-                                    className="mr-2 mt-4 rounded bg-neutral-900 px-2 py-1 text-sm font-medium text-green-500"
-                                >
-                                    {tech}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-                ))}
+                        </motion.div>
+                    );
+                })}
             </div>
         </section>
     );
