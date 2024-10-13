@@ -1,6 +1,5 @@
 import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
 
-import Marquee from "./marquee";
 const MarqueeSection = lazy(() => import("./marquee"));
 
 function Technologies() {
@@ -37,7 +36,7 @@ function Technologies() {
             <div ref={aboutRef}>
                 {loadMarquee ? (
                     <Suspense fallback={<div>Loading About...</div>}>
-                        <Marquee />
+                        <MarqueeSection />
                     </Suspense>
                 ) : (
                     <div>Scroll to load About section...</div>
