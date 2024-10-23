@@ -12,7 +12,7 @@ const MarqueeItem = ({ images, from, to }: any) => {
                 className="flex flex-shrink-0"
             >
                 {images.map((Icon: any, index: any) => {
-                    return <Icon key={index} className="h-28 w-32 lg:h-36 lg:w-40 pr-20 text-white" />;
+                    return <Icon key={index} className="h-28 w-32 lg:h-36 lg:w-40 pr-20 text-gray-200" />;
                 })}
             </motion.div>
 

@@ -32,7 +32,7 @@ const WelcomeAnimation = ({ onComplete }: { onComplete: () => void }) => {
                 {text.split("").map((letter, index) => (
                     <motion.span
                         key={index}
-                        className="text-white md:text-2xl text-lg lg:text-4xl"
+                        className="text-gray-200 md:text-2xl text-lg lg:text-4xl"
                         initial={{ opacity: 0, y: 50 }}
                         animate={{
                             opacity: index <= currentLetterIndex ? 1 : 0,
