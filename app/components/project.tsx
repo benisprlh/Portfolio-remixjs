@@ -117,8 +117,8 @@ const Project = () => {
     }, [loadProjects]);
 
     return (
-        <section className="border-b border-neutral-900 pb-4" ref={projectRef}>
-            <h2 className="my-20 text-center text-4xl text-white">Projects</h2>
+        <section className="border-b border-neutral-900 pb-4 text white" ref={projectRef}>
+            <h2 className="my-20 text-center text-4xl text-gray-200">Projects</h2>
             {loadProjects ? (
                 <Suspense fallback={<div>Loading...</div>}>
                     <div>
@@ -142,7 +142,7 @@ const Project = () => {
                                         />
                                     </div>
                                     <div className="w-full max-w-xl lg:w-3/5">
-                                        <h5 className="mb-2 font-semibold text-xl">{project.title}</h5>
+                                        <h5 className="mb-2 font-semibold text-xl text-gray-200">{project.title}</h5>
                                         <p className="mb-4 text-neutral-400">{project.description}</p>
                                         <div className="flex flex-row flex-wrap gap-2">
                                             {project.technologies.map((tech, techIndex) => (
@@ -162,7 +162,7 @@ const Project = () => {
                 </Suspense>
 
             ) : (
-                <div className="text-white">Loading projects...</div>
+                <div className="text-gray-200">Loading projects...</div>
             )}
         </section>
     );

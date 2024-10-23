@@ -37,11 +37,11 @@ function Technologies() {
     return (
         <motion.section
             className="border-b border-neutral-800 pb-24"
-            initial={{ opacity: 0, y: 20 }} // Start with opacity 0 and moved down
-            animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }} // Animate to opacity 1 and move up
+            initial={{ opacity: 0, y: 100 }} // Start with opacity 0 and moved down
+            animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 100 }} // Animate to opacity 1 and move up
             transition={{ duration: 1 }} // Set duration for the transition
         >
-            <h2 className="my-20 text-center text-4xl text-white">Skills</h2>
+            <h2 className="my-20 text-center text-4xl text-gray-200">Skills</h2>
             <div ref={aboutRef}>
                 {loadMarquee ? (
                     <Suspense fallback={<div>Loading About...</div>}>
